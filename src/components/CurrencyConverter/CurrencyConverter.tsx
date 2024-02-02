@@ -11,8 +11,7 @@ const sdk = new SDK({
 });
 
 const CurrencyConverter = () => {
-    // Set state and functions here that will be shared/needed by the children components
-
+    const [inputValue, setInputValue] = useState<string>("");
     const [data, setData] = useState<APICurrencyRatePair[]>([]);
 
     useEffect(() => {
@@ -30,12 +29,18 @@ const CurrencyConverter = () => {
         getCurrencyList();
     }, []);
 
+    // Function to only allow changing the input using digits or "."
+    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const validInputRegex = /^\d*\.?\d*$/; // Regex that represents numbers with possible decimal digits as well
+        if (event.target.value.match(validInputRegex)) setInputValue(event.target.value);
+    };
+
     return (
         <main className="main_container">
             <h2>Currency Converter</h2>
             <p>Receive competitive and transparent pricing with no hidden spreads. See how we compare.</p>
             <div className="inputs_container">
-                <div>Input</div>
+                <input type="text" value={inputValue} onChange={handleInputChange} maxLength={24} placeholder="0.00" />
                 <div>Select</div>
             </div>
             <section>
