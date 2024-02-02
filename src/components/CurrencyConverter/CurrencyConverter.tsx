@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import SDK from "@uphold/uphold-sdk-javascript";
 
-import { APICurrencyRatePair } from "../../models/model";
+import { APICurrencyRatePair, CurrencyRatePair } from "../../models/model";
 import useLocalStorage from "../../hooks/useLocalStorage";
 import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
+import ExchangedCurrenciesList from "../ExchangedCurrenciesList/ExchangedCurrenciesList";
 
 const LOCAL_STORAGE_INPUT_VALUE_KEY = "ExchangeCurreny.inputValue";
 const LOCAL_STORAGE_CURRENCY_KEY = "ExchangeCurreny.currency";
@@ -37,7 +38,8 @@ const CurrencyConverter = () => {
     // Loading flag for the retrieval of the exchange rates list
     const [isLoadingList, setIsLoadingList] = useState<boolean>(false);
 
-    const [data, setData] = useLocalStorage<APICurrencyRatePair[]>(LOCAL_STORAGE_EXCHANGE_RATES_LIST_KEY, []);
+    // const [data, setData] = useLocalStorage<APICurrencyRatePair[]>(LOCAL_STORAGE_EXCHANGE_RATES_LIST_KEY, []);
+    const [data, setData] = useLocalStorage<CurrencyRatePair[]>(LOCAL_STORAGE_EXCHANGE_RATES_LIST_KEY, []);
 
     // As soon as component mounts, dynamically get all possible currencies from Uphold's API
     useEffect(() => {
@@ -74,7 +76,13 @@ const CurrencyConverter = () => {
                 const data: APICurrencyRatePair[] = await sdk.getTicker(currency);
                 setData(
                     // Remove all pair duplicates; only the ones with the correct "ask" rate remain
-                    data.filter((APIExchangeRate: APICurrencyRatePair) => APIExchangeRate.currency === currency)
+                    data
+                        .filter((APIExchangeRate: APICurrencyRatePair) => APIExchangeRate.currency === currency)
+                        .map((APIExchangeRate: APICurrencyRatePair) => ({
+                            currencyFrom: APIExchangeRate.currency,
+                            currencyTo: parsePairString(APIExchangeRate.pair, APIExchangeRate.currency),
+                            rate: APIExchangeRate.ask, // The <ask> property is the "price" of the <currencyTo> currency, so that is what's shown as the exchange rate
+                        }))
                 );
             } catch (err) {
                 console.log("Error retrieving currencies from Uphold API");
@@ -89,6 +97,14 @@ const CurrencyConverter = () => {
         return () => clearTimeout(getData);
     }, [inputValue, currency]);
 
+    // Function to obtain the destination currency from an API exchange rate pair string
+    const parsePairString = (pairString: string, currencyFromString: string) => {
+        const searchIndex = pairString.lastIndexOf(currencyFromString);
+        // If pair string has a "-" separating both currencies, remove it
+        if (pairString[searchIndex - 1] === "-") return pairString.slice(0, searchIndex - 1);
+        else return pairString.slice(0, searchIndex);
+    };
+
     // Function to only allow changing the input using digits or "."
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const validInputRegex = /^\d*\.?\d*$/; // Regex that represents numbers with possible decimal digits as well
@@ -101,7 +117,6 @@ const CurrencyConverter = () => {
             <p>Receive competitive and transparent pricing with no hidden spreads. See how we compare.</p>
             <div className="inputs_container">
                 <input type="text" value={inputValue} onChange={handleInputChange} maxLength={24} placeholder="0.00" />
-                {/* <div>Select</div> */}
                 <div className="select_container">
                     {isLoading ? (
                         <LoadingSpinner />
@@ -120,20 +135,7 @@ const CurrencyConverter = () => {
                 </div>
             </div>
 
-            {isLoadingList ? (
-                <LoadingSpinner />
-            ) : (
-                <section>
-                    Exchanged Currencies List
-                    {data.map((dataItem) => (
-                        <div key={dataItem.pair}>
-                            <p>{dataItem.currency}</p>
-                            <p>{dataItem.pair}</p>
-                            <p>{dataItem.bid}</p>
-                        </div>
-                    ))}
-                </section>
-            )}
+            {isLoadingList ? <LoadingSpinner /> : <ExchangedCurrenciesList data={data} />}
         </main>
     );
 };
