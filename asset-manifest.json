@@ -1,10 +1,15 @@
 {
   "files": {
-    "main.js": "/exchange-currency/static/js/main.8d70c4a4.js",
+    "main.js": "/exchange-currency/static/js/main.8b3a2d2f.js",
+    "static/media/qr-code.svg": "/exchange-currency/static/media/qr-code.efaa6309cf7bb96f52b0a2553911956b.svg",
+    "static/media/small-logo.svg": "/exchange-currency/static/media/small-logo.35301590d79b2c21fda8377276667043.svg",
+    "static/media/logo.svg": "/exchange-currency/static/media/logo.1272cfc5b4735c6e5c8264b3075c0a2a.svg",
+    "static/media/appstore.svg": "/exchange-currency/static/media/appstore.86b252da6f5478ff36662ef093775794.svg",
+    "static/media/playstore.svg": "/exchange-currency/static/media/playstore.fefca27aad94b691c1ab07bb7c43098e.svg",
     "index.html": "/exchange-currency/index.html",
-    "main.8d70c4a4.js.map": "/exchange-currency/static/js/main.8d70c4a4.js.map"
+    "main.8b3a2d2f.js.map": "/exchange-currency/static/js/main.8b3a2d2f.js.map"
   },
   "entrypoints": [
-    "static/js/main.8d70c4a4.js"
+    "static/js/main.8b3a2d2f.js"
   ]
 }
