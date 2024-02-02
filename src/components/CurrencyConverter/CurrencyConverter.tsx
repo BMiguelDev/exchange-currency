@@ -83,6 +83,7 @@ const CurrencyConverter = () => {
                             currencyTo: parsePairString(APIExchangeRate.pair, APIExchangeRate.currency),
                             rate: APIExchangeRate.ask, // The <ask> property is the "price" of the <currencyTo> currency, so that is what's shown as the exchange rate
                         }))
+                        .sort((a, b) => reOrderExchangeCurrencies(a, b)) // Sort the obtained array so that the common currencies appear at the top (to follow the mock-up given)
                 );
             } catch (err) {
                 console.log("Error retrieving currencies from Uphold API");
@@ -96,6 +97,12 @@ const CurrencyConverter = () => {
         // When this "useEffect" call finishes, clear the timeout so that the API request is cancelled
         return () => clearTimeout(getData);
     }, [inputValue, currency]);
+
+    // Sort an array of type <CurrencyRatePair> to make common currencies appear at the top, and the remaining ones appear alphabetically
+    const reOrderExchangeCurrencies = (a: CurrencyRatePair, b: CurrencyRatePair) => {
+        if (COMMON_CURRENCIES.includes(a.currencyTo)) return -1;
+        else return a.currencyTo < b.currencyTo ? -1 : a.currencyTo > b.currencyTo ? 1 : 0;
+    };
 
     // Function to obtain the destination currency from an API exchange rate pair string
     const parsePairString = (pairString: string, currencyFromString: string) => {
