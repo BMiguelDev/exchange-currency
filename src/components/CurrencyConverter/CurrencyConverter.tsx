@@ -4,7 +4,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 
 import { APICurrencyRatePair } from "../../models/model";
+import useLocalStorage from "../../hooks/useLocalStorage";
 
+const LOCAL_STORAGE_INPUT_VALUE_KEY = "ExchangeCurreny.inputValue";
+const LOCAL_STORAGE_CURRENCY_KEY = "ExchangeCurreny.currency";
+const LOCAL_STORAGE_CURRENCY_LIST_KEY = "ExchangeCurreny.currencyList";
+const LOCAL_STORAGE_EXCHANGE_RATES_LIST_KEY = "ExchangeCurreny.exchangeRatesList";
 const DEBOUNCE_TIME = 500;
 const COMMON_CURRENCIES = ["USD", "EUR", "BAT", "BTC", "BCH", "CNY", "ETH", "GBP"];
 
@@ -16,16 +21,21 @@ const sdk = new SDK({
 });
 
 const CurrencyConverter = () => {
-    const [inputValue, setInputValue] = useState<string>("");
-    const [currency, setCurrency] = useState<string>(COMMON_CURRENCIES[0]); // Initialize <currency> array with "USD" currency (to follow the mock-up given)
+    // const [inputValue, setInputValue] = useState<string>("");
+    // Create a state variable that is stored (and always updated) in localStorage and is initialized with the cached value if it exists
+    const [inputValue, setInputValue] = useLocalStorage<string>(LOCAL_STORAGE_INPUT_VALUE_KEY, "");
+    // const [currency, setCurrency] = useState<string>(COMMON_CURRENCIES[0]); // Initialize <currency> array with "USD" currency (to follow the mock-up given)
+    const [currency, setCurrency] = useLocalStorage<string>(LOCAL_STORAGE_CURRENCY_KEY, COMMON_CURRENCIES[0]); // Initialize <currency> array with "USD" currency (to follow the mock-up given)
 
     // Initialize <currencyList> array with common currencies (so that they appear on top, to follow the mock-up given)
-    const [currencyList, setCurrencyList] = useState<string[]>(COMMON_CURRENCIES);
+    // const [currencyList, setCurrencyList] = useState<string[]>(COMMON_CURRENCIES);
+    const [currencyList, setCurrencyList] = useLocalStorage<string[]>(LOCAL_STORAGE_CURRENCY_LIST_KEY, COMMON_CURRENCIES);
 
     // Loading flag for the retrieval of the currency list
     const [isLoading, setIsLoading] = useState<boolean>(true);
 
-    const [data, setData] = useState<APICurrencyRatePair[]>([]);
+    // const [data, setData] = useState<APICurrencyRatePair[]>([]);
+    const [data, setData] = useLocalStorage<APICurrencyRatePair[]>(LOCAL_STORAGE_EXCHANGE_RATES_LIST_KEY, []);
 
     // As soon as component mounts, dynamically get all possible currencies from Uphold's API
     useEffect(() => {
