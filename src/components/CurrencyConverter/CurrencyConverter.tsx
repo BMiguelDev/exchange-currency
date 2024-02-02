@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import SDK from "@uphold/uphold-sdk-javascript";
 
-import { APICurrencyRatePair } from "../../models/model";
+import { APICurrencyRatePair, CurrencyRatePair } from "../../models/model";
 import useLocalStorage from "../../hooks/useLocalStorage";
 import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
+import ExchangedCurrenciesList from "../ExchangedCurrenciesList/ExchangedCurrenciesList";
 
 const LOCAL_STORAGE_INPUT_VALUE_KEY = "ExchangeCurreny.inputValue";
 const LOCAL_STORAGE_CURRENCY_KEY = "ExchangeCurreny.currency";
@@ -37,7 +38,8 @@ const CurrencyConverter = () => {
     // Loading flag for the retrieval of the exchange rates list
     const [isLoadingList, setIsLoadingList] = useState<boolean>(false);
 
-    const [data, setData] = useLocalStorage<APICurrencyRatePair[]>(LOCAL_STORAGE_EXCHANGE_RATES_LIST_KEY, []);
+    // const [data, setData] = useLocalStorage<APICurrencyRatePair[]>(LOCAL_STORAGE_EXCHANGE_RATES_LIST_KEY, []);
+    const [exchangeRatesList, setExchangeRatesList] = useLocalStorage<CurrencyRatePair[]>(LOCAL_STORAGE_EXCHANGE_RATES_LIST_KEY, []);
 
     // As soon as component mounts, dynamically get all possible currencies from Uphold's API
     useEffect(() => {
@@ -55,7 +57,11 @@ const CurrencyConverter = () => {
             } catch (err) {
                 console.log("Error retrieving currencies from Uphold API");
                 console.error(err);
-                alert("Server unreachable, try again later"); // If initial API call is unsuccessful, it most likely means the user has no internet connection or the server is unreachable
+                const localStorageItem = localStorage.getItem(LOCAL_STORAGE_CURRENCY_LIST_KEY);
+                if (localStorageItem && JSON.parse(localStorageItem).length > COMMON_CURRENCIES.length) {
+                    // If the browser's local storage has more than the initial currencies, it means there are currencies in cache that should be shown when the server is unreachable
+                    alert("Server unreachable, showing cached currency list from previous query instead");
+                } else alert("Server unreachable, try again later"); // If initial API call is unsuccessful, it most likely means the user has no internet connection or the server is unreachable
             } finally {
                 setIsLoading(false);
             }
@@ -72,14 +78,24 @@ const CurrencyConverter = () => {
             setIsLoadingList(true);
             try {
                 const data: APICurrencyRatePair[] = await sdk.getTicker(currency);
-                setData(
-                    // Remove all pair duplicates; only the ones with the correct "ask" rate remain
-                    data.filter((APIExchangeRate: APICurrencyRatePair) => APIExchangeRate.currency === currency)
+                setExchangeRatesList(
+                    data
+                        .filter((APIExchangeRate: APICurrencyRatePair) => APIExchangeRate.currency !== currency) // Remove all pair duplicates; only the ones with the correct "ask" rate remain
+                        .map((APIExchangeRate: APICurrencyRatePair) => ({
+                            currencyFrom: currency,
+                            currencyTo: APIExchangeRate.currency,
+                            rate: APIExchangeRate.ask, // The <ask> property is the "price" of the <currencyFrom> currency when paying in <currencyTo> currency, so that is what's shown as the exchange rate
+                        }))
+                        .sort((a, b) => reOrderExchangeCurrencies(a, b)) // Sort the obtained array so that the common currencies appear at the top (to follow the mock-up given)
                 );
             } catch (err) {
                 console.log("Error retrieving currencies from Uphold API");
                 console.error(err);
-                alert("Server unreachable, try again later");
+                const localStorageItem = localStorage.getItem(LOCAL_STORAGE_EXCHANGE_RATES_LIST_KEY);
+                if (localStorageItem && JSON.parse(localStorageItem).length > 0) {
+                    // If the browser's local storage has exchange rates info cached, it should be shown when the server is unreachable
+                    alert("Server unreachable, showing cached exchange rate information from previous query instead");
+                } else alert("Server unreachable, try again later");
             } finally {
                 setIsLoadingList(false);
             }
@@ -88,6 +104,12 @@ const CurrencyConverter = () => {
         // When this "useEffect" call finishes, clear the timeout so that the API request is cancelled
         return () => clearTimeout(getData);
     }, [inputValue, currency]);
+
+    // Sort an array of type <CurrencyRatePair> to make common currencies appear at the top, and the remaining ones appear alphabetically
+    const reOrderExchangeCurrencies = (a: CurrencyRatePair, b: CurrencyRatePair) => {
+        if (COMMON_CURRENCIES.includes(a.currencyTo)) return -1;
+        else return a.currencyTo < b.currencyTo ? -1 : a.currencyTo > b.currencyTo ? 1 : 0;
+    };
 
     // Function to only allow changing the input using digits or "."
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -101,7 +123,6 @@ const CurrencyConverter = () => {
             <p>Receive competitive and transparent pricing with no hidden spreads. See how we compare.</p>
             <div className="inputs_container">
                 <input type="text" value={inputValue} onChange={handleInputChange} maxLength={24} placeholder="0.00" />
-                {/* <div>Select</div> */}
                 <div className="select_container">
                     {isLoading ? (
                         <LoadingSpinner />
@@ -120,20 +141,7 @@ const CurrencyConverter = () => {
                 </div>
             </div>
 
-            {isLoadingList ? (
-                <LoadingSpinner />
-            ) : (
-                <section>
-                    Exchanged Currencies List
-                    {data.map((dataItem) => (
-                        <div key={dataItem.pair}>
-                            <p>{dataItem.currency}</p>
-                            <p>{dataItem.pair}</p>
-                            <p>{dataItem.bid}</p>
-                        </div>
-                    ))}
-                </section>
-            )}
+            {isLoadingList ? <LoadingSpinner /> : <ExchangedCurrenciesList exchangeRatesList={exchangeRatesList} inputValue={inputValue} />}
         </main>
     );
 };
