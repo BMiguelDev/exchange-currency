@@ -13,10 +13,43 @@ const sdk = new SDK({
 const CurrencyConverter = () => {
     const [inputValue, setInputValue] = useState<string>("");
     const [currency, setCurrency] = useState<string>("USD"); // Initialize <currency> array with "USD" currency (to follow the mock-up given)
+
+    // Initialize <currencyList> array with common currencies (so that they appear on top, to follow the mock-up given)
+    const [currencyList, setCurrencyList] = useState<string[]>([
+        "USD",
+        "EUR",
+        "BAT",
+        "BTC",
+        "BCH",
+        "CNY",
+        "ETH",
+        "GBP",
+    ]);
     const [data, setData] = useState<APICurrencyRatePair[]>([]);
 
+    // As soon as component mounts, dynamically get all possible currencies from Uphold's API
     useEffect(() => {
         const getCurrencyList = async () => {
+            try {
+                const data: APICurrencyRatePair[] = await sdk.getTicker();
+                data.forEach((currencyPair: APICurrencyRatePair) => {
+                    setCurrencyList((prevCurrencyList) => {
+                        // Add all distinct currencies to <currencyList>
+                        if (!prevCurrencyList.includes(currencyPair.currency))
+                            return [...prevCurrencyList, currencyPair.currency];
+                        else return prevCurrencyList;
+                    });
+                });
+            } catch (err) {
+                console.log("Error retrieving currencies from Uphold API");
+                console.error(err);
+                alert("Server unreachable, try again later"); // If initial API call is unsuccessful, it most likely means the user has no internet connection or the server is unreachable
+            }
+        };
+
+        getCurrencyList();
+
+        const getWholeCurrencyList = async () => {
             try {
                 const data: APICurrencyRatePair[] = await sdk.getTicker();
                 setData(data);
@@ -27,7 +60,7 @@ const CurrencyConverter = () => {
             }
         };
 
-        getCurrencyList();
+        getWholeCurrencyList();
     }, []);
 
     // Function to only allow changing the input using digits or "."
@@ -45,22 +78,14 @@ const CurrencyConverter = () => {
                 {/* <div>Select</div> */}
                 <div className="select_container">
                     <select onChange={(event) => setCurrency(event.target.value)} name="currency" value={currency}>
-                        {/* Add static options to follow the mock up */}
-                        <option value={"USD"}>EUR</option>
-                        <option value={"EUR"}>EUR</option>
-                        <option value={"BAT"}>BAT</option>
-                        <option value={"BTC"}>BTC</option>
-                        <option value={"BCH"}>BCH</option>
-                        <option value={"CNY"}>CNY</option>
-                        <option value={"ETH"}>ETH</option>
-                        <option value={"GBP"}>GBP</option>
-
-                        {/* // TODO: Display all possible currencies (obtained from initial API request) as selectable options
-                            // currencyList.map((currency) => (
-                            //     <option key={currency} value={currency}>
-                            //         {currency}
-                            //     </option>
-                            // )) */}
+                        {
+                            // Display all possible currencies (obtained from initial API request) as selectable options
+                            currencyList.map((currency) => (
+                                <option key={currency} value={currency}>
+                                    {currency}
+                                </option>
+                            ))
+                        }
                     </select>
                 </div>
             </div>

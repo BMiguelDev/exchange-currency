@@ -18,7 +18,7 @@ test("Page should show a text input and a select input", async () => {
     const inputElement = screen.getByRole('textbox');
     expect(inputElement).toBeInTheDocument();
 
-    const selectElement = screen.getByRole('combobox');
+    const selectElement = await screen.findByRole('combobox');
     expect(selectElement).toBeInTheDocument();
 });
 
@@ -33,7 +33,7 @@ test("On first component mount, input value should be empty", async () => {
 test('On first component mount, the selected currency value should be "USD"', async () => {
     render(<CurrencyConverter />);
 
-    const selectElement = screen.getByRole('combobox');
+    const selectElement = await screen.findByRole('combobox');
     expect(selectElement).toHaveValue("USD");
 });
 
@@ -60,8 +60,8 @@ test('Text input should only allow digit characters and "." in a coherent way', 
 test('User should be able to select a currency and see it selected on screen', async () => {
     render(<CurrencyConverter />);
 
-    const selectElement = screen.getByRole('combobox');
-    const optionElements = screen.getAllByRole('option');
+    const selectElement = await screen.findByRole('combobox');
+    const optionElements = await screen.findAllByRole('option');
 
     expect(optionElements[1]).toHaveValue("EUR");
 
