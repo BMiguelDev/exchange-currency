@@ -2,14 +2,15 @@ import React from "react";
 import { CurrencyRatePair } from "../../models/model";
 
 interface PropTypes {
-    data: CurrencyRatePair[];
+    exchangeRatesList: CurrencyRatePair[];
+    inputValue: string;
 }
 
-const ExchangedCurrenciesList = ({ data }: PropTypes) => {
+const ExchangedCurrenciesList = ({ exchangeRatesList, inputValue }: PropTypes) => {
     return (
         <section>
             Exchanged Currencies List
-            {data.map((dataItem) => (
+            {exchangeRatesList.map((dataItem) => (
                 <div key={dataItem.currencyTo}>
                     <p>{dataItem.currencyFrom}</p>
                     <p>{dataItem.currencyTo}</p>

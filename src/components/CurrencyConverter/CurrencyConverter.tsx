@@ -39,7 +39,7 @@ const CurrencyConverter = () => {
     const [isLoadingList, setIsLoadingList] = useState<boolean>(false);
 
     // const [data, setData] = useLocalStorage<APICurrencyRatePair[]>(LOCAL_STORAGE_EXCHANGE_RATES_LIST_KEY, []);
-    const [data, setData] = useLocalStorage<CurrencyRatePair[]>(LOCAL_STORAGE_EXCHANGE_RATES_LIST_KEY, []);
+    const [exchangeRatesList, setExchangeRatesList] = useLocalStorage<CurrencyRatePair[]>(LOCAL_STORAGE_EXCHANGE_RATES_LIST_KEY, []);
 
     // As soon as component mounts, dynamically get all possible currencies from Uphold's API
     useEffect(() => {
@@ -74,14 +74,13 @@ const CurrencyConverter = () => {
             setIsLoadingList(true);
             try {
                 const data: APICurrencyRatePair[] = await sdk.getTicker(currency);
-                setData(
-                    // Remove all pair duplicates; only the ones with the correct "ask" rate remain
+                setExchangeRatesList(
                     data
-                        .filter((APIExchangeRate: APICurrencyRatePair) => APIExchangeRate.currency === currency)
+                        .filter((APIExchangeRate: APICurrencyRatePair) => APIExchangeRate.currency !== currency) // Remove all pair duplicates; only the ones with the correct "ask" rate remain
                         .map((APIExchangeRate: APICurrencyRatePair) => ({
-                            currencyFrom: APIExchangeRate.currency,
-                            currencyTo: parsePairString(APIExchangeRate.pair, APIExchangeRate.currency),
-                            rate: APIExchangeRate.ask, // The <ask> property is the "price" of the <currencyTo> currency, so that is what's shown as the exchange rate
+                            currencyFrom: currency,
+                            currencyTo: APIExchangeRate.currency,
+                            rate: APIExchangeRate.ask, // The <ask> property is the "price" of the <currencyFrom> currency when paying in <currencyTo> currency, so that is what's shown as the exchange rate
                         }))
                         .sort((a, b) => reOrderExchangeCurrencies(a, b)) // Sort the obtained array so that the common currencies appear at the top (to follow the mock-up given)
                 );
@@ -102,14 +101,6 @@ const CurrencyConverter = () => {
     const reOrderExchangeCurrencies = (a: CurrencyRatePair, b: CurrencyRatePair) => {
         if (COMMON_CURRENCIES.includes(a.currencyTo)) return -1;
         else return a.currencyTo < b.currencyTo ? -1 : a.currencyTo > b.currencyTo ? 1 : 0;
-    };
-
-    // Function to obtain the destination currency from an API exchange rate pair string
-    const parsePairString = (pairString: string, currencyFromString: string) => {
-        const searchIndex = pairString.lastIndexOf(currencyFromString);
-        // If pair string has a "-" separating both currencies, remove it
-        if (pairString[searchIndex - 1] === "-") return pairString.slice(0, searchIndex - 1);
-        else return pairString.slice(0, searchIndex);
     };
 
     // Function to only allow changing the input using digits or "."
@@ -142,7 +133,7 @@ const CurrencyConverter = () => {
                 </div>
             </div>
 
-            {isLoadingList ? <LoadingSpinner /> : <ExchangedCurrenciesList data={data} />}
+            {isLoadingList ? <LoadingSpinner /> : <ExchangedCurrenciesList exchangeRatesList={exchangeRatesList} inputValue={inputValue} />}
         </main>
     );
 };
