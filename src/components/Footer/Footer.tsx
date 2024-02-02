@@ -9,7 +9,7 @@ const Footer = () => {
     return (
         <footer className="footer_container">
             <UpholdSmalllLogo />
-            <select name="currency" value={"English"} style={{ opacity: ".5" }}>
+            <select name="currency" style={{ opacity: ".5" }} aria-readonly={true}>
                 <option value={"English"}>English</option>
                 <option value={"Portuguese"}>Portuguese</option>
             </select>
