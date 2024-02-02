@@ -5,6 +5,7 @@ import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 
 import { APICurrencyRatePair } from "../../models/model";
 
+const DEBOUNCE_TIME = 500;
 const COMMON_CURRENCIES = ["USD", "EUR", "BAT", "BTC", "BCH", "CNY", "ETH", "GBP"];
 
 // Initialize Uphold's SDK
@@ -51,25 +52,28 @@ const CurrencyConverter = () => {
         getCurrencyList();
     }, []);
 
-    // Whenever <currency> changes, get exchange rate values from Uphold's API
+    // Whenever <currency> changes, get exchange rate values from Uphold's API using a debounce mechanism (only triggers .5 second later)
     useEffect(() => {
         if (inputValue === "") return;
 
-        const getData = async () => {
+        const getData = setTimeout(async () => {
             try {
                 const data: APICurrencyRatePair[] = await sdk.getTicker(currency);
                 console.log("New Ticker: ", data);
                 setData(
                     // Remove all pair duplicates; only the ones with the correct "ask" rate remain
                     data.filter((APIExchangeRate: APICurrencyRatePair) => APIExchangeRate.currency === currency)
-                    );
+    
+                );
             } catch (err) {
                 console.log("Error retrieving currencies from Uphold API");
                 console.error(err);
                 alert("Server unreachable, try again later");
             }
-        }
-        getData();
+        }, DEBOUNCE_TIME);
+
+        // When this "useEffect" call finishes, clear the timeout so that the API request is cancelled
+        return () => clearTimeout(getData);
     }, [inputValue, currency]);
 
     // Function to only allow changing the input using digits or "."
