@@ -57,7 +57,11 @@ const CurrencyConverter = () => {
             } catch (err) {
                 console.log("Error retrieving currencies from Uphold API");
                 console.error(err);
-                alert("Server unreachable, try again later"); // If initial API call is unsuccessful, it most likely means the user has no internet connection or the server is unreachable
+                const localStorageItem = localStorage.getItem(LOCAL_STORAGE_CURRENCY_LIST_KEY);
+                if (localStorageItem && JSON.parse(localStorageItem).length > COMMON_CURRENCIES.length) {
+                    // If the browser's local storage has more than the initial currencies, it means there are currencies in cache that should be shown when the server is unreachable
+                    alert("Server unreachable, showing cached currency list from previous query instead");
+                } else alert("Server unreachable, try again later"); // If initial API call is unsuccessful, it most likely means the user has no internet connection or the server is unreachable
             } finally {
                 setIsLoading(false);
             }
@@ -87,7 +91,11 @@ const CurrencyConverter = () => {
             } catch (err) {
                 console.log("Error retrieving currencies from Uphold API");
                 console.error(err);
-                alert("Server unreachable, try again later");
+                const localStorageItem = localStorage.getItem(LOCAL_STORAGE_EXCHANGE_RATES_LIST_KEY);
+                if (localStorageItem && JSON.parse(localStorageItem).length > 0) {
+                    // If the browser's local storage has exchange rates info cached, it should be shown when the server is unreachable
+                    alert("Server unreachable, showing cached exchange rate information from previous query instead");
+                } else alert("Server unreachable, try again later");
             } finally {
                 setIsLoadingList(false);
             }

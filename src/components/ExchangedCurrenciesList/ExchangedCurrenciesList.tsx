@@ -1,6 +1,7 @@
 import React from "react";
 
 import { CurrencyRatePair } from "../../models/model";
+import CurrencyImage from "../CurrencyImage/CurrencyImage";
 
 interface PropTypes {
     exchangeRatesList: CurrencyRatePair[];
@@ -32,7 +33,7 @@ const ExchangedCurrenciesList = ({ exchangeRatesList, inputValue, className }: P
                                     <b>Rate: </b> <span aria-label="currency_rate_number">{Number(exchangeRate.rate.slice(0, 8))}</span>
                                 </div>
                                 <figure className="exchanged_currency_info" aria-label="currency_info">
-                                    {/* Get img element here */}
+                                    <CurrencyImage imageTitle={exchangeRate.currencyTo} />
                                     <figcaption>{exchangeRate.currencyTo}</figcaption>
                                 </figure>
                             </li>
