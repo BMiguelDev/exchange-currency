@@ -86,6 +86,6 @@ test("Value shown for each row should have only 8 characters", () => {
 test('Rate shown for each row should have only 8 characters', () => {
     render(<ExchangedCurrenciesList exchangeRatesList={testExhangeRatesList} inputValue="123" />);
 
-    const rateElements = screen.getAllByLabelText("currency_rate");
+    const rateElements = screen.getAllByLabelText("currency_rate_number");
     rateElements.forEach(rate => expect(rate.textContent?.length).toBeLessThanOrEqual(8))
 });
