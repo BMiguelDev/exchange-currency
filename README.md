@@ -4,6 +4,8 @@
 
 #### Developed using React, Typescript, Styled-Components and Jest
 
+#### Check the app: https://bmigueldev.github.io/exchange-currency
+
 ## Instructions to run application in development mode:
 - Open command line and navigate to project's folder: "exchange-currency"
 - Run command "npm install"
