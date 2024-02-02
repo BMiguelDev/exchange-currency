@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import SDK from "@uphold/uphold-sdk-javascript";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 
 import { APICurrencyRatePair } from "../../models/model";
 
@@ -25,6 +27,10 @@ const CurrencyConverter = () => {
         "ETH",
         "GBP",
     ]);
+
+    // Loading flag for the retrieval of the currency list
+    const [isLoading, setIsLoading] = useState<boolean>(true);
+
     const [data, setData] = useState<APICurrencyRatePair[]>([]);
 
     // As soon as component mounts, dynamically get all possible currencies from Uphold's API
@@ -44,6 +50,8 @@ const CurrencyConverter = () => {
                 console.log("Error retrieving currencies from Uphold API");
                 console.error(err);
                 alert("Server unreachable, try again later"); // If initial API call is unsuccessful, it most likely means the user has no internet connection or the server is unreachable
+            } finally {
+                setIsLoading(false);
             }
         };
 
@@ -77,16 +85,20 @@ const CurrencyConverter = () => {
                 <input type="text" value={inputValue} onChange={handleInputChange} maxLength={24} placeholder="0.00" />
                 {/* <div>Select</div> */}
                 <div className="select_container">
-                    <select onChange={(event) => setCurrency(event.target.value)} name="currency" value={currency}>
-                        {
-                            // Display all possible currencies (obtained from initial API request) as selectable options
-                            currencyList.map((currency) => (
-                                <option key={currency} value={currency}>
-                                    {currency}
-                                </option>
-                            ))
-                        }
-                    </select>
+                {isLoading ? (
+                        <FontAwesomeIcon icon={faSpinner} spin aria-label="loading_icon"/>
+                    ) : (
+                        <select onChange={(event) => setCurrency(event.target.value)} name="currency" value={currency}>
+                            {
+                                // Display all possible currencies (obtained from initial API request) as selectable options
+                                currencyList.map((currency) => (
+                                    <option key={currency} value={currency}>
+                                        {currency}
+                                    </option>
+                                ))
+                            }
+                        </select>
+                    )}
                 </div>
             </div>
             <section>

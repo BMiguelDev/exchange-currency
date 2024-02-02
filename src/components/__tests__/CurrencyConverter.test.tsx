@@ -1,5 +1,5 @@
 import * as React from "react";
-import { cleanup, render, screen } from "@testing-library/react";
+import { cleanup, render, screen, waitForElementToBeRemoved } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import CurrencyConverter from '../CurrencyConverter/CurrencyConverter';
@@ -12,11 +12,18 @@ afterEach(() => {
     cleanup();
 });
 
+// Future improvements - useful tests using a mock server:
+// - "The select input should have as many options as the currencies retrieved from the API"
+// - "The list should show as many rows as the number of exchanged currency pairs retrieved from the API"
+
 test("Page should show a text input and a select input", async () => {
     render(<CurrencyConverter />);
 
     const inputElement = screen.getByRole('textbox');
     expect(inputElement).toBeInTheDocument();
+
+    const loadingElement = screen.getByLabelText("loading_icon");
+    await waitForElementToBeRemoved(loadingElement);
 
     const selectElement = await screen.findByRole('combobox');
     expect(selectElement).toBeInTheDocument();
@@ -32,6 +39,9 @@ test("On first component mount, input value should be empty", async () => {
 
 test('On first component mount, the selected currency value should be "USD"', async () => {
     render(<CurrencyConverter />);
+
+    const loadingElement = screen.getByLabelText("loading_icon");
+    await waitForElementToBeRemoved(loadingElement);
 
     const selectElement = await screen.findByRole('combobox');
     expect(selectElement).toHaveValue("USD");
@@ -59,6 +69,9 @@ test('Text input should only allow digit characters and "." in a coherent way', 
 
 test('User should be able to select a currency and see it selected on screen', async () => {
     render(<CurrencyConverter />);
+
+    const loadingElement = screen.getByLabelText("loading_icon");
+    await waitForElementToBeRemoved(loadingElement);
 
     const selectElement = await screen.findByRole('combobox');
     const optionElements = await screen.findAllByRole('option');
