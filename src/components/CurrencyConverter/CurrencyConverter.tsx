@@ -5,6 +5,8 @@ import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 
 import { APICurrencyRatePair } from "../../models/model";
 
+const COMMON_CURRENCIES = ["USD", "EUR", "BAT", "BTC", "BCH", "CNY", "ETH", "GBP"];
+
 // Initialize Uphold's SDK
 const sdk = new SDK({
     baseUrl: "http://api-sandbox.uphold.com",
@@ -14,19 +16,10 @@ const sdk = new SDK({
 
 const CurrencyConverter = () => {
     const [inputValue, setInputValue] = useState<string>("");
-    const [currency, setCurrency] = useState<string>("USD"); // Initialize <currency> array with "USD" currency (to follow the mock-up given)
+    const [currency, setCurrency] = useState<string>(COMMON_CURRENCIES[0]); // Initialize <currency> array with "USD" currency (to follow the mock-up given)
 
     // Initialize <currencyList> array with common currencies (so that they appear on top, to follow the mock-up given)
-    const [currencyList, setCurrencyList] = useState<string[]>([
-        "USD",
-        "EUR",
-        "BAT",
-        "BTC",
-        "BCH",
-        "CNY",
-        "ETH",
-        "GBP",
-    ]);
+    const [currencyList, setCurrencyList] = useState<string[]>(COMMON_CURRENCIES);
 
     // Loading flag for the retrieval of the currency list
     const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -56,20 +49,28 @@ const CurrencyConverter = () => {
         };
 
         getCurrencyList();
+    }, []);
 
-        const getWholeCurrencyList = async () => {
+    // Whenever <currency> changes, get exchange rate values from Uphold's API
+    useEffect(() => {
+        if (inputValue === "") return;
+
+        const getData = async () => {
             try {
-                const data: APICurrencyRatePair[] = await sdk.getTicker();
-                setData(data);
+                const data: APICurrencyRatePair[] = await sdk.getTicker(currency);
+                console.log("New Ticker: ", data);
+                setData(
+                    // Remove all pair duplicates; only the ones with the correct "ask" rate remain
+                    data.filter((APIExchangeRate: APICurrencyRatePair) => APIExchangeRate.currency === currency)
+                    );
             } catch (err) {
                 console.log("Error retrieving currencies from Uphold API");
                 console.error(err);
-                alert("Server unreachable, try again later"); // If initial API call is unsuccessful, it most likely means the user has no internet connection or the server is unreachable
+                alert("Server unreachable, try again later");
             }
-        };
-
-        getWholeCurrencyList();
-    }, []);
+        }
+        getData();
+    }, [inputValue, currency]);
 
     // Function to only allow changing the input using digits or "."
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
