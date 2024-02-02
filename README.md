@@ -10,7 +10,8 @@
 - Open command line and navigate to project's folder: "exchange-currency"
 - Run command "npm install"
 - Run command "npm start" to start application in the browser
-###### Note: The unit tests can be run with the command "npm run test"
+- Use a browser extension such as "Moesif Origin & CORS Changer" to deal with the CORS restrictions and be able to access the API
+###### Note: <br /> - The unit tests can be run with the command "npm run test" <br /> - Unfortunately the app deployed at the link above isn't working properly because the provided Uphold's SDK doesn't have an "HTTPS" protocol. Download the source code and follow the instructions above to see the complete app.
 
 ## App functionalities:
 - Show the exchanged currency value of any submitted number to other currencies supported by Uphold
