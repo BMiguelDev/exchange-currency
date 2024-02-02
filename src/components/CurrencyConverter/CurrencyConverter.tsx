@@ -12,6 +12,7 @@ const sdk = new SDK({
 
 const CurrencyConverter = () => {
     const [inputValue, setInputValue] = useState<string>("");
+    const [currency, setCurrency] = useState<string>("USD"); // Initialize <currency> array with "USD" currency (to follow the mock-up given)
     const [data, setData] = useState<APICurrencyRatePair[]>([]);
 
     useEffect(() => {
@@ -41,19 +42,37 @@ const CurrencyConverter = () => {
             <p>Receive competitive and transparent pricing with no hidden spreads. See how we compare.</p>
             <div className="inputs_container">
                 <input type="text" value={inputValue} onChange={handleInputChange} maxLength={24} placeholder="0.00" />
-                <div>Select</div>
+                {/* <div>Select</div> */}
+                <div className="select_container">
+                    <select onChange={(event) => setCurrency(event.target.value)} name="currency" value={currency}>
+                        {/* Add static options to follow the mock up */}
+                        <option value={"USD"}>EUR</option>
+                        <option value={"EUR"}>EUR</option>
+                        <option value={"BAT"}>BAT</option>
+                        <option value={"BTC"}>BTC</option>
+                        <option value={"BCH"}>BCH</option>
+                        <option value={"CNY"}>CNY</option>
+                        <option value={"ETH"}>ETH</option>
+                        <option value={"GBP"}>GBP</option>
+
+                        {/* // TODO: Display all possible currencies (obtained from initial API request) as selectable options
+                            // currencyList.map((currency) => (
+                            //     <option key={currency} value={currency}>
+                            //         {currency}
+                            //     </option>
+                            // )) */}
+                    </select>
+                </div>
             </div>
             <section>
                 Exchanged Currencies List
-                {
-                    data.map(dataItem=> (
-                        <div key={dataItem.pair}>
-                            <p>{dataItem.currency}</p>
-                            <p>{dataItem.pair}</p>
-                            <p>{dataItem.bid}</p>
-                        </div>
-                    ))
-                }
+                {data.map((dataItem) => (
+                    <div key={dataItem.pair}>
+                        <p>{dataItem.currency}</p>
+                        <p>{dataItem.pair}</p>
+                        <p>{dataItem.bid}</p>
+                    </div>
+                ))}
             </section>
         </main>
     );
