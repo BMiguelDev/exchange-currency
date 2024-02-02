@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
 import SDK from "@uphold/uphold-sdk-javascript";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 
 import { APICurrencyRatePair } from "../../models/model";
 import useLocalStorage from "../../hooks/useLocalStorage";
+import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
 
 const LOCAL_STORAGE_INPUT_VALUE_KEY = "ExchangeCurreny.inputValue";
 const LOCAL_STORAGE_CURRENCY_KEY = "ExchangeCurreny.currency";
@@ -21,20 +20,23 @@ const sdk = new SDK({
 });
 
 const CurrencyConverter = () => {
-    // const [inputValue, setInputValue] = useState<string>("");
     // Create a state variable that is stored (and always updated) in localStorage and is initialized with the cached value if it exists
     const [inputValue, setInputValue] = useLocalStorage<string>(LOCAL_STORAGE_INPUT_VALUE_KEY, "");
-    // const [currency, setCurrency] = useState<string>(COMMON_CURRENCIES[0]); // Initialize <currency> array with "USD" currency (to follow the mock-up given)
+
     const [currency, setCurrency] = useLocalStorage<string>(LOCAL_STORAGE_CURRENCY_KEY, COMMON_CURRENCIES[0]); // Initialize <currency> array with "USD" currency (to follow the mock-up given)
 
     // Initialize <currencyList> array with common currencies (so that they appear on top, to follow the mock-up given)
-    // const [currencyList, setCurrencyList] = useState<string[]>(COMMON_CURRENCIES);
-    const [currencyList, setCurrencyList] = useLocalStorage<string[]>(LOCAL_STORAGE_CURRENCY_LIST_KEY, COMMON_CURRENCIES);
+    const [currencyList, setCurrencyList] = useLocalStorage<string[]>(
+        LOCAL_STORAGE_CURRENCY_LIST_KEY,
+        COMMON_CURRENCIES
+    );
 
     // Loading flag for the retrieval of the currency list
     const [isLoading, setIsLoading] = useState<boolean>(true);
 
-    // const [data, setData] = useState<APICurrencyRatePair[]>([]);
+    // Loading flag for the retrieval of the exchange rates list
+    const [isLoadingList, setIsLoadingList] = useState<boolean>(false);
+
     const [data, setData] = useLocalStorage<APICurrencyRatePair[]>(LOCAL_STORAGE_EXCHANGE_RATES_LIST_KEY, []);
 
     // As soon as component mounts, dynamically get all possible currencies from Uphold's API
@@ -67,18 +69,19 @@ const CurrencyConverter = () => {
         if (inputValue === "") return;
 
         const getData = setTimeout(async () => {
+            setIsLoadingList(true);
             try {
                 const data: APICurrencyRatePair[] = await sdk.getTicker(currency);
-                console.log("New Ticker: ", data);
                 setData(
                     // Remove all pair duplicates; only the ones with the correct "ask" rate remain
                     data.filter((APIExchangeRate: APICurrencyRatePair) => APIExchangeRate.currency === currency)
-    
                 );
             } catch (err) {
                 console.log("Error retrieving currencies from Uphold API");
                 console.error(err);
                 alert("Server unreachable, try again later");
+            } finally {
+                setIsLoadingList(false);
             }
         }, DEBOUNCE_TIME);
 
@@ -100,8 +103,8 @@ const CurrencyConverter = () => {
                 <input type="text" value={inputValue} onChange={handleInputChange} maxLength={24} placeholder="0.00" />
                 {/* <div>Select</div> */}
                 <div className="select_container">
-                {isLoading ? (
-                        <FontAwesomeIcon icon={faSpinner} spin aria-label="loading_icon"/>
+                    {isLoading ? (
+                        <LoadingSpinner />
                     ) : (
                         <select onChange={(event) => setCurrency(event.target.value)} name="currency" value={currency}>
                             {
@@ -116,16 +119,21 @@ const CurrencyConverter = () => {
                     )}
                 </div>
             </div>
-            <section>
-                Exchanged Currencies List
-                {data.map((dataItem) => (
-                    <div key={dataItem.pair}>
-                        <p>{dataItem.currency}</p>
-                        <p>{dataItem.pair}</p>
-                        <p>{dataItem.bid}</p>
-                    </div>
-                ))}
-            </section>
+
+            {isLoadingList ? (
+                <LoadingSpinner />
+            ) : (
+                <section>
+                    Exchanged Currencies List
+                    {data.map((dataItem) => (
+                        <div key={dataItem.pair}>
+                            <p>{dataItem.currency}</p>
+                            <p>{dataItem.pair}</p>
+                            <p>{dataItem.bid}</p>
+                        </div>
+                    ))}
+                </section>
+            )}
         </main>
     );
 };

@@ -15,6 +15,8 @@ afterEach(() => {
 // Future improvements - useful tests using a mock server:
 // - "The select input should have as many options as the currencies retrieved from the API"
 // - "The list should show as many rows as the number of exchanged currency pairs retrieved from the API"
+// - "When changing the input value, new values and rates should be shown in the exchanged currency list (integration test)"
+// - "When there's an input value and the selected currency is changed, new values and rates should be shown in the exchanged currency list (integration test)"
 
 test("Page should show a text input and a select input", async () => {
     render(<CurrencyConverter />);
