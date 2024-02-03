@@ -34,10 +34,11 @@ const GlobalStyles = createGlobalStyle<{ theme: ThemeType }>`
     .app_container {
         // width: 100vw;
         display: flex;
+        height: 100%;
         flex-direction: column;
         // align-items: center;
         justify-content: flex-start;
-        gap: 2rem;
+        gap: 1.5rem;
         /* background-color: var(--app-bg-color); */
         background-color: ${(props) => props.theme.appBgColor};
         

@@ -4,7 +4,7 @@ import CurrencyConverter from "../CurrencyConverter";
 
 export const StyledCurrencyConverter = styled(CurrencyConverter)`
     // Currency Converter main content
-    height: 60%;
+    height: 55%;
     margin: 1% 25%;
     /* padding: 1rem; */
     display: flex;
