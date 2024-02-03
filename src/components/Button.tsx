@@ -2,15 +2,15 @@ import React from 'react';
 
 interface PropTypes {
     buttonTitle: string;
-    bgColor: string;
     handleClick: () => void;
+    className?: string;
 }
 
-const Button = ({ buttonTitle, bgColor, handleClick }: PropTypes) => {
+const Button = ({ buttonTitle, handleClick, className }: PropTypes) => {
   return (
-    <button
+    <button 
+        className={className}
         onClick={handleClick}
-        style={{ backgroundColor: bgColor}}
       >
         {buttonTitle}
     </button>

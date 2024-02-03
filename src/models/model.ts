@@ -12,3 +12,15 @@ export interface CurrencyRatePair {
     currencyTo: string;
     rate: string;
 }
+
+// Type definition for the theme used in styled components
+export interface ThemeType {
+    appBgColor: string;
+    appPrimaryColor: string;
+    appSecondaryColor: string;
+    appSecondaryColorVariant1: string;
+    appSecondaryColorVariant2: string;
+    appSecondaryColorVariant3: string;
+    appSecondaryColorVariant4: string;
+    appSecondaryColorVariant5: string;
+}

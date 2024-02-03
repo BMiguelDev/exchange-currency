@@ -1,18 +1,23 @@
 import React from "react";
 
 import { ReactComponent as UpholdLogo } from '../assets/icons/logo.svg';
-import Button from "./Button";
+import { StyledButton } from "./styles/Button.styles";
 
-function Navbar() {
+interface PropTypes {
+    className?: string;
+}
+
+function Navbar({ className }: PropTypes) {
     return (
-        <header >
+        <header className={className}>
             <nav className="navbar_container">
                 <h4>Uphold</h4>
                 <UpholdLogo />
-                <Button bgColor="rgb(73, 204, 104)" buttonTitle="Log In" handleClick={() => null} />
+                <StyledButton bgColor="rgb(73, 204, 104)" buttonTitle="Log In" handleClick={() => null} />
             </nav>
         </header>
     );
 }
 
 export default Navbar;
+

@@ -5,9 +5,13 @@ import { ReactComponent as AppStoreLogo } from "../assets/icons/appstore.svg";
 import { ReactComponent as PlayStoreLogo } from "../assets/icons/playstore.svg";
 import { ReactComponent as QRCodeLogo } from "../assets/icons/qr-code.svg";
 
-const Footer = () => {
+interface PropTypes {
+    className?: string;
+}
+
+const Footer = ({ className }: PropTypes) => {
     return (
-        <footer className="footer_container">
+        <footer className={className}>
             <UpholdSmalllLogo />
             <select name="currency" style={{ opacity: ".5" }} aria-readonly={true}>
                 <option value={"English"}>English</option>
