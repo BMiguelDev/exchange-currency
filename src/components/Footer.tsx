@@ -1,6 +1,6 @@
 import React from "react";
 
-import { ReactComponent as UpholdSmalllLogo } from "../assets/icons/small-logo.svg";
+import { ReactComponent as UpholdSmallLogo } from "../assets/icons/small-logo.svg";
 import { ReactComponent as AppStoreLogo } from "../assets/icons/appstore.svg";
 import { ReactComponent as PlayStoreLogo } from "../assets/icons/playstore.svg";
 import { ReactComponent as QRCodeLogo } from "../assets/icons/qr-code.svg";
@@ -14,7 +14,7 @@ const Footer = ({ className }: PropTypes) => {
         <footer className={className}>
             <div className="footer_top_row">
                 <div className="small_logo_wrapper">
-                    <UpholdSmalllLogo />
+                    <UpholdSmallLogo />
                 </div>
                 <div className="links_list_container">
                     <h5>Products</h5>

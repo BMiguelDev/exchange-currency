@@ -1,10 +1,13 @@
 import React, { useEffect, useRef, useState } from "react";
 import SDK from "@uphold/uphold-sdk-javascript";
+import Select, { SingleValue } from "react-select";
 
 import { APICurrencyRatePair, CurrencyRatePair } from "../models/model";
 import useLocalStorage from "../hooks/useLocalStorage";
+import DropdownIndicator from "./DropdownIndicator";
 import { StyledExchangedCurrenciesList } from "./styles/ExchangedCurrenciesList.styles";
 import { StyledLoadingSpinner } from "./styles/LoadingSpinner.styles";
+import { StyledCurrencyImage } from "./styles/CurrencyImage.styles";
 
 const LOCAL_STORAGE_INPUT_VALUE_KEY = "ExchangeCurreny.inputValue";
 const LOCAL_STORAGE_CURRENCY_KEY = "ExchangeCurreny.currency";
@@ -81,8 +84,8 @@ const CurrencyConverter = ({ className }: PropTypes) => {
 
     // Focus on text input as soon as component mounts, if input value is still empty
     useEffect(() => {
-        if(inputValue === "" && inputRef.current) inputRef.current.focus();
-    }, [inputValue])
+        if (inputValue === "" && inputRef.current) inputRef.current.focus();
+    }, [inputValue]);
 
     // Whenever <currency> or <inputValue> changes, get exchange rate values from Uphold's API using a debounce mechanism (only triggers .5 second later)
     useEffect(() => {
@@ -131,26 +134,57 @@ const CurrencyConverter = ({ className }: PropTypes) => {
         if (event.target.value.match(validInputRegex)) setInputValue(event.target.value);
     };
 
+    const handleChangeSelect = (
+        event: SingleValue<{
+            value: string;
+            label: string;
+        }>
+    ) => {
+        if (event) setCurrency(event.label);
+    };
+
     return (
         <main className={className}>
             <h2>Currency Converter</h2>
             <p>Receive competitive and transparent pricing with no hidden spreads. See how we compare.</p>
             <div className="inputs_container">
-                <input ref={inputRef} type="text" value={inputValue} onChange={handleInputChange} maxLength={24} placeholder="0.00" />
+                <input
+                    ref={inputRef}
+                    type="text"
+                    value={inputValue}
+                    onChange={handleInputChange}
+                    maxLength={24}
+                    placeholder="0.00"
+                />
                 <div className="select_container">
                     {isLoading ? (
                         <StyledLoadingSpinner fontSize="1.25rem" marginTop="0.25rem" />
                     ) : (
-                        <select onChange={(event) => setCurrency(event.target.value)} name="currency" value={currency}>
-                            {
-                                // Display all possible currencies (obtained from initial API request) as selectable options
-                                currencyList.map((currency) => (
-                                    <option key={currency} value={currency}>
-                                        {currency}
-                                    </option>
-                                ))
-                            }
-                        </select>
+                        <Select
+                            value={{ value: currency, label: currency }}
+                            options={currencyList
+                                .filter((currencyOption) => currencyOption !== currency)
+                                .map((currency, index) => ({
+                                    value: currency,
+                                    label: currency,
+                                }))}
+                            onChange={handleChangeSelect}
+                            formatOptionLabel={(currency) => (
+                                <div key={currency.value} className="currency_option">
+                                    <StyledCurrencyImage imageTitle={currency.value} />
+                                    <span>{currency.value}</span>
+                                </div>
+                            )}
+                            isSearchable={false}
+                            styles={{
+                                control: (base) => ({
+                                    ...base,
+                                    border: 0,
+                                    boxShadow: "none", // Remove select's blue border on focus
+                                }),
+                            }}
+                            components={{ DropdownIndicator }}
+                        />
                     )}
                 </div>
             </div>

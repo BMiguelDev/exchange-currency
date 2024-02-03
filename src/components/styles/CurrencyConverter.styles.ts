@@ -17,6 +17,7 @@ export const StyledCurrencyConverter = styled(CurrencyConverter)`
         margin: 0;
         padding-bottom: 1rem;
         font-weight: bold;
+        font-size: 1.75rem;
         color: ${(props) => props.theme.appSecondaryColorVariant1};
     }
 
@@ -38,7 +39,7 @@ export const StyledCurrencyConverter = styled(CurrencyConverter)`
             width: 100%;
             // height: 100%;
             padding: .4rem .75rem;
-            font-size: 1.3rem;
+            font-size: 1.6rem;
             background-color: ${(props) => props.theme.appSecondaryColorVariant5};
             color: ${(props) => props.theme.appSecondaryColorVariant1};;
             border: none;
@@ -57,20 +58,116 @@ export const StyledCurrencyConverter = styled(CurrencyConverter)`
             position: absolute;
             top: 10%;
             right: 0%;
-            padding-right: .5rem;
             /* width: 20%; */
+            width: 105px;
             height: 80%;
             display: flex;
             justify-content: center;
             align-items: center;
+            box-shadow: inset 0 0 0rem 1rem ${(props) => props.theme.appSecondaryColorVariant5};
 
-            select {
-                font-family: "Lato", sans-serif;
-                font-size: .775rem !important;
-                border: none;
-                border-radius: 2rem;
-                height: 80%;
-                cursor: pointer;
+            & > div {
+                height: 90%;
+                padding-right: .75rem;
+                /* width: 90%; */
+
+                & > div:nth-of-type(1) {
+                    background-color: ${(props) => props.theme.appBgColor};
+                    padding: 0 0.2rem 0 0.1rem;
+                    font-size: 0.85rem;
+                    font-weight: bold;
+                    letter-spacing: 0.01rem;
+                    color: ${(props) => props.theme.appSecondaryColorVariant2};
+                    border-radius: 2rem;
+                    border: none;
+                    height: 100%;
+                    min-height: unset;
+
+                    & > div:nth-of-type(1) {
+                        cursor: pointer;
+                        height: 100%;
+                        min-height: unset;
+                        /* display: flex; */
+                        align-items: center;
+                        justify-content: center;
+                        padding: 0;
+
+                        & > div {
+                            min-height: unset;
+                            height: 100%;
+                            display: flex;
+                            align-items: center;
+                            padding: 0 0 .65rem .5rem;
+
+                            & > div {
+                                display: flex;
+                                flex-direction: row;
+                                align-items: center;
+                                justify-content: center;
+                                gap: 0.25rem;
+                                font-size: .75rem;
+                                color: ${(props) => props.theme.appSecondaryColorVariant2};
+                            }
+                        }
+                    }
+
+                    & > div:nth-of-type(2) {
+                        cursor: pointer;
+                        padding-top: 0.2rem;
+
+                        span {
+                            display: none;
+                        }
+
+                        div {
+                            padding: 0 0.25rem;
+                        }
+                    }
+                }
+
+                & > div:nth-of-type(2) {
+                    margin-top: 0.15rem;
+                    /* padding-top: 0.05rem; */
+                    background-color: ${(props) => props.theme.appBgColor};
+                    box-shadow: 0 0.15rem 0.8rem 0.15rem ${(props) => props.theme.appSecondaryColorVariant3};
+                    border-radius: 0.25rem;
+                    width: 92px;
+
+                    .currency_option {
+                        display: flex;
+                        flex-direction: row;
+                        align-items: center;
+                        gap: 0.25rem;
+                    }
+
+                    & > div {
+                        max-height: 15vh;
+                        padding: 0 0 .1rem 0;
+                        border-radius: 0.25rem;
+
+                        & > div {
+                            cursor: pointer;
+                            padding: 0.35rem 0.15rem 0.35rem 0;
+                            font-size: .75rem;
+                            font-weight: bold;
+                            letter-spacing: 0.01rem;
+                            background-color: transparent;
+                            color: ${(props) => props.theme.appSecondaryColorVariant2};
+                            display: flex;
+                            justify-content: center;
+
+                            // On mobile devices align options with selected option, by adding padding to account for the lack of a scrollbar
+                            @media (any-pointer: coarse) {
+                                padding: 0.325rem 1rem 0.325rem 0;
+                            }
+
+                            // If option is hovered, give appropriate background color
+                            &:not(.css-tr4s17-option):hover {
+                                background-color: ${(props) => props.theme.appSecondaryColorVariant4};
+                            }
+                        }
+                    }
+                }
             }
         }
     }

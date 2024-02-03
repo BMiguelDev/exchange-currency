@@ -49,14 +49,20 @@ export const StyledExchangedCurrenciesList = styled(ExchangedCurrenciesList)`
                 margin: 0;
                 gap: .2rem;
                 font-size: .75rem;
+                padding-right: .75rem;
                 color: ${(props) => props.theme.appSecondaryColorVariant1};
                 font-weight: bold;
+
+                // On mobile devices align currency info with selected option, by adding padding to account for the lack of a scrollbar
+                @media (any-pointer: coarse) {
+                    padding-right: 1.65rem;
+                }
             }
         }
     }
 
     &>p {
-        font-size: .75rem;
+        font-size: .7rem;
         color: ${(props) => props.theme.appSecondaryColorVariant2};
         margin: 1rem 0;
         text-align: center;

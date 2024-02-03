@@ -44,7 +44,7 @@ const GlobalStyles = createGlobalStyle<{ theme: ThemeType }>`
         
 
         // Media query for unsuitable screens (mobile extremelly small)
-        @media screen and (max-width: 300px), screen and (max-height: 250px) {
+        @media screen and (max-width: 300px), screen and (max-height: 350px) {
             
             // App content
             visibility: hidden;
