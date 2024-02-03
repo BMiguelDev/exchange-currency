@@ -1,10 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import SDK from "@uphold/uphold-sdk-javascript";
+import Select, { SingleValue } from "react-select";
 
-import { APICurrencyRatePair, CurrencyRatePair } from "../../models/model";
-import useLocalStorage from "../../hooks/useLocalStorage";
-import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
-import ExchangedCurrenciesList from "../ExchangedCurrenciesList/ExchangedCurrenciesList";
+import { APICurrencyRatePair, CurrencyRatePair } from "../models/model";
+import useLocalStorage from "../hooks/useLocalStorage";
+import DropdownIndicator from "./DropdownIndicator";
+import { StyledExchangedCurrenciesList } from "./styles/ExchangedCurrenciesList.styles";
+import { StyledLoadingSpinner } from "./styles/LoadingSpinner.styles";
+import { StyledCurrencyImage } from "./styles/CurrencyImage.styles";
 
 const LOCAL_STORAGE_INPUT_VALUE_KEY = "ExchangeCurreny.inputValue";
 const LOCAL_STORAGE_CURRENCY_KEY = "ExchangeCurreny.currency";
@@ -20,7 +23,11 @@ const sdk = new SDK({
     clientSecret: "bar",
 });
 
-const CurrencyConverter = () => {
+interface PropTypes {
+    className?: string;
+}
+
+const CurrencyConverter = ({ className }: PropTypes) => {
     // Create a state variable that is stored (and always updated) in localStorage and is initialized with the cached value if it exists
     const [inputValue, setInputValue] = useLocalStorage<string>(LOCAL_STORAGE_INPUT_VALUE_KEY, "");
 
@@ -39,11 +46,16 @@ const CurrencyConverter = () => {
     const [isLoadingList, setIsLoadingList] = useState<boolean>(false);
 
     // const [data, setData] = useLocalStorage<APICurrencyRatePair[]>(LOCAL_STORAGE_EXCHANGE_RATES_LIST_KEY, []);
-    const [exchangeRatesList, setExchangeRatesList] = useLocalStorage<CurrencyRatePair[]>(LOCAL_STORAGE_EXCHANGE_RATES_LIST_KEY, []);
+    const [exchangeRatesList, setExchangeRatesList] = useLocalStorage<CurrencyRatePair[]>(
+        LOCAL_STORAGE_EXCHANGE_RATES_LIST_KEY,
+        []
+    );
+
+    const inputRef = useRef<HTMLInputElement>(null);
 
     // As soon as component mounts, dynamically get all possible currencies from Uphold's API
     useEffect(() => {
-        const getCurrencyList = async () => {
+        const fetchCurrencyList = async () => {
             try {
                 const data: APICurrencyRatePair[] = await sdk.getTicker();
                 data.forEach((currencyPair: APICurrencyRatePair) => {
@@ -67,10 +79,15 @@ const CurrencyConverter = () => {
             }
         };
 
-        getCurrencyList();
-    }, []);
+        fetchCurrencyList();
+    }, [setCurrencyList]);
 
-    // Whenever <currency> changes, get exchange rate values from Uphold's API using a debounce mechanism (only triggers .5 second later)
+    // Focus on text input as soon as component mounts, if input value is still empty
+    useEffect(() => {
+        if (inputValue === "" && inputRef.current) inputRef.current.focus();
+    }, [inputValue]);
+
+    // Whenever <currency> or <inputValue> changes, get exchange rate values from Uphold's API using a debounce mechanism (only triggers .5 second later)
     useEffect(() => {
         if (inputValue === "") return;
 
@@ -103,7 +120,7 @@ const CurrencyConverter = () => {
 
         // When this "useEffect" call finishes, clear the timeout so that the API request is cancelled
         return () => clearTimeout(getData);
-    }, [inputValue, currency]);
+    }, [inputValue, currency, setExchangeRatesList]);
 
     // Sort an array of type <CurrencyRatePair> to make common currencies appear at the top, and the remaining ones appear alphabetically
     const reOrderExchangeCurrencies = (a: CurrencyRatePair, b: CurrencyRatePair) => {
@@ -117,31 +134,66 @@ const CurrencyConverter = () => {
         if (event.target.value.match(validInputRegex)) setInputValue(event.target.value);
     };
 
+    const handleChangeSelect = (
+        event: SingleValue<{
+            value: string;
+            label: string;
+        }>
+    ) => {
+        if (event) setCurrency(event.label);
+    };
+
     return (
-        <main className="main_container">
+        <main className={className}>
             <h2>Currency Converter</h2>
             <p>Receive competitive and transparent pricing with no hidden spreads. See how we compare.</p>
             <div className="inputs_container">
-                <input type="text" value={inputValue} onChange={handleInputChange} maxLength={24} placeholder="0.00" />
+                <input
+                    ref={inputRef}
+                    type="text"
+                    value={inputValue}
+                    onChange={handleInputChange}
+                    maxLength={24}
+                    placeholder="0.00"
+                />
                 <div className="select_container">
                     {isLoading ? (
-                        <LoadingSpinner />
+                        <StyledLoadingSpinner fontSize="1.25rem" marginTop="0.25rem" />
                     ) : (
-                        <select onChange={(event) => setCurrency(event.target.value)} name="currency" value={currency}>
-                            {
-                                // Display all possible currencies (obtained from initial API request) as selectable options
-                                currencyList.map((currency) => (
-                                    <option key={currency} value={currency}>
-                                        {currency}
-                                    </option>
-                                ))
-                            }
-                        </select>
+                        <Select
+                            value={{ value: currency, label: currency }}
+                            options={currencyList
+                                .filter((currencyOption) => currencyOption !== currency)
+                                .map((currency, index) => ({
+                                    value: currency,
+                                    label: currency,
+                                }))}
+                            onChange={handleChangeSelect}
+                            formatOptionLabel={(currency) => (
+                                <div key={currency.value} className="currency_option">
+                                    <StyledCurrencyImage imageTitle={currency.value} />
+                                    <span>{currency.value}</span>
+                                </div>
+                            )}
+                            isSearchable={false}
+                            styles={{
+                                control: (base) => ({
+                                    ...base,
+                                    border: 0,
+                                    boxShadow: "none", // Remove select's blue border on focus
+                                }),
+                            }}
+                            components={{ DropdownIndicator }}
+                        />
                     )}
                 </div>
             </div>
 
-            {isLoadingList ? <LoadingSpinner /> : <ExchangedCurrenciesList exchangeRatesList={exchangeRatesList} inputValue={inputValue} />}
+            {isLoadingList ? (
+                <StyledLoadingSpinner fontSize="2.5rem" marginTop="2rem" />
+            ) : (
+                <StyledExchangedCurrenciesList exchangeRatesList={exchangeRatesList} inputValue={inputValue} />
+            )}
         </main>
     );
 };

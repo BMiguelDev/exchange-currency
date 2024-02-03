@@ -1,7 +1,7 @@
 import * as React from "react";
 import { cleanup, render, screen } from "@testing-library/react";
 
-import ExchangedCurrenciesList from "../ExchangedCurrenciesList/ExchangedCurrenciesList";
+import ExchangedCurrenciesList from "../ExchangedCurrenciesList";
 import { CurrencyRatePair } from "../../models/model";
 
 afterEach(() => {
