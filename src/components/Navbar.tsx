@@ -1,7 +1,7 @@
 import React from "react";
 
-import { ReactComponent as UpholdLogo } from '../../assets/icons/logo.svg';
-import Button from "../Button/Button";
+import { ReactComponent as UpholdLogo } from '../assets/icons/logo.svg';
+import Button from "./Button";
 
 function Navbar() {
     return (

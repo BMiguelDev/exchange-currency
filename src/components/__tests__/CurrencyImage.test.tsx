@@ -1,7 +1,7 @@
 import * as React from "react";
 import { cleanup, render, screen } from "@testing-library/react";
 
-import CurrencyImage from "../CurrencyImage/CurrencyImage";
+import CurrencyImage from "../CurrencyImage";
 
 afterEach(() => {
     cleanup();

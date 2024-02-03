@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import SDK from "@uphold/uphold-sdk-javascript";
 
-import { APICurrencyRatePair, CurrencyRatePair } from "../../models/model";
-import useLocalStorage from "../../hooks/useLocalStorage";
-import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
-import ExchangedCurrenciesList from "../ExchangedCurrenciesList/ExchangedCurrenciesList";
+import { APICurrencyRatePair, CurrencyRatePair } from "../models/model";
+import useLocalStorage from "../hooks/useLocalStorage";
+import LoadingSpinner from "./LoadingSpinner";
+import ExchangedCurrenciesList from "./ExchangedCurrenciesList";
 
 const LOCAL_STORAGE_INPUT_VALUE_KEY = "ExchangeCurreny.inputValue";
 const LOCAL_STORAGE_CURRENCY_KEY = "ExchangeCurreny.currency";

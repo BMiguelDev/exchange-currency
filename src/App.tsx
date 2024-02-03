@@ -1,8 +1,8 @@
 import React, { useEffect, useRef } from "react";
 
-import Navbar from "./components/Navbar/Navbar";
-import Footer from "./components/Footer/Footer";
-import CurrencyConverter from "./components/CurrencyConverter/CurrencyConverter";
+import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
+import CurrencyConverter from "./components/CurrencyConverter";
 
 const App = () => {
     const appContainerRef = useRef<HTMLDivElement>(null);

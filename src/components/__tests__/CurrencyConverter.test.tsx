@@ -2,7 +2,7 @@ import * as React from "react";
 import { cleanup, render, screen, waitForElementToBeRemoved } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-import CurrencyConverter from '../CurrencyConverter/CurrencyConverter';
+import CurrencyConverter from '../CurrencyConverter';
 
 beforeEach(() => {
     window.localStorage.clear();

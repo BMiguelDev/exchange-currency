@@ -15,7 +15,7 @@ const CurrencyImage = ({ imageTitle }: PropTypes) => {
     // Try to require currency logo from the "src/assets/images"; if it doens't exist, require static error logo and flip error flag (to stop looping)
     const attemptRequire = (imgSrc: string) => {
         try {
-            return require(`../../assets/images/${imgSrc}.png`);
+            return require(`../assets/images/${imgSrc}.png`);
         } catch (err) {
             if (!isImageError) {
                 setImageSrc(ERROR_IMAGE_TITLE);

@@ -1,9 +1,9 @@
 import React from "react";
 
-import { ReactComponent as UpholdSmalllLogo } from "../../assets/icons/small-logo.svg";
-import { ReactComponent as AppStoreLogo } from "../../assets/icons/appstore.svg";
-import { ReactComponent as PlayStoreLogo } from "../../assets/icons/playstore.svg";
-import { ReactComponent as QRCodeLogo } from "../../assets/icons/qr-code.svg";
+import { ReactComponent as UpholdSmalllLogo } from "../assets/icons/small-logo.svg";
+import { ReactComponent as AppStoreLogo } from "../assets/icons/appstore.svg";
+import { ReactComponent as PlayStoreLogo } from "../assets/icons/playstore.svg";
+import { ReactComponent as QRCodeLogo } from "../assets/icons/qr-code.svg";
 
 const Footer = () => {
     return (

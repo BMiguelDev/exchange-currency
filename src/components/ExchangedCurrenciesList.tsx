@@ -1,7 +1,7 @@
 import React from "react";
 
-import { CurrencyRatePair } from "../../models/model";
-import CurrencyImage from "../CurrencyImage/CurrencyImage";
+import { CurrencyRatePair } from "../models/model";
+import CurrencyImage from "./CurrencyImage";
 
 interface PropTypes {
     exchangeRatesList: CurrencyRatePair[];
