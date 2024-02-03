@@ -11,7 +11,6 @@ export const StyledCurrencyConverter = styled(CurrencyConverter)`
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
-    /* gap: .8rem; */
 
     h2 {
         margin: 0;
@@ -162,7 +161,7 @@ export const StyledCurrencyConverter = styled(CurrencyConverter)`
                             }
 
                             // If option is hovered, give appropriate background color
-                            &:not(.css-tr4s17-option):hover {
+                            &:hover {
                                 background-color: ${(props) => props.theme.appSecondaryColorVariant4};
                             }
                         }

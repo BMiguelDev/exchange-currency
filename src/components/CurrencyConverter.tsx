@@ -45,7 +45,6 @@ const CurrencyConverter = ({ className }: PropTypes) => {
     // Loading flag for the retrieval of the exchange rates list
     const [isLoadingList, setIsLoadingList] = useState<boolean>(false);
 
-    // const [data, setData] = useLocalStorage<APICurrencyRatePair[]>(LOCAL_STORAGE_EXCHANGE_RATES_LIST_KEY, []);
     const [exchangeRatesList, setExchangeRatesList] = useLocalStorage<CurrencyRatePair[]>(
         LOCAL_STORAGE_EXCHANGE_RATES_LIST_KEY,
         []
@@ -163,7 +162,7 @@ const CurrencyConverter = ({ className }: PropTypes) => {
                         <Select
                             value={{ value: currency, label: currency }}
                             options={currencyList
-                                .filter((currencyOption) => currencyOption !== currency)
+                                .filter((currencyOption) => currencyOption !== currency)    // Don't include selected currency in the options list
                                 .map((currency, index) => ({
                                     value: currency,
                                     label: currency,
@@ -184,6 +183,7 @@ const CurrencyConverter = ({ className }: PropTypes) => {
                                 }),
                             }}
                             components={{ DropdownIndicator }}
+                            classNamePrefix="react-select"
                         />
                     )}
                 </div>
