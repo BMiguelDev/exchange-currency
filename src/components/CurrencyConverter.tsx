@@ -52,7 +52,7 @@ const CurrencyConverter = ({ className }: PropTypes) => {
 
     // As soon as component mounts, dynamically get all possible currencies from Uphold's API
     useEffect(() => {
-        const getCurrencyList = async () => {
+        const fetchCurrencyList = async () => {
             try {
                 const data: APICurrencyRatePair[] = await sdk.getTicker();
                 data.forEach((currencyPair: APICurrencyRatePair) => {
@@ -76,13 +76,15 @@ const CurrencyConverter = ({ className }: PropTypes) => {
             }
         };
 
-        getCurrencyList();
+        fetchCurrencyList();
+    }, [setCurrencyList]);
 
-        // Focus on text input as soon as component mounts, if input value is still empty
+    // Focus on text input as soon as component mounts, if input value is still empty
+    useEffect(() => {
         if(inputValue === "" && inputRef.current) inputRef.current.focus();
-    }, []);
+    }, [inputValue])
 
-    // Whenever <currency> changes, get exchange rate values from Uphold's API using a debounce mechanism (only triggers .5 second later)
+    // Whenever <currency> or <inputValue> changes, get exchange rate values from Uphold's API using a debounce mechanism (only triggers .5 second later)
     useEffect(() => {
         if (inputValue === "") return;
 
@@ -115,7 +117,7 @@ const CurrencyConverter = ({ className }: PropTypes) => {
 
         // When this "useEffect" call finishes, clear the timeout so that the API request is cancelled
         return () => clearTimeout(getData);
-    }, [inputValue, currency]);
+    }, [inputValue, currency, setExchangeRatesList]);
 
     // Sort an array of type <CurrencyRatePair> to make common currencies appear at the top, and the remaining ones appear alphabetically
     const reOrderExchangeCurrencies = (a: CurrencyRatePair, b: CurrencyRatePair) => {
