@@ -3,8 +3,8 @@ import SDK from "@uphold/uphold-sdk-javascript";
 
 import { APICurrencyRatePair, CurrencyRatePair } from "../models/model";
 import useLocalStorage from "../hooks/useLocalStorage";
-import LoadingSpinner from "./LoadingSpinner";
-import ExchangedCurrenciesList from "./ExchangedCurrenciesList";
+import { StyledExchangedCurrenciesList } from "./styles/ExchangedCurrenciesList.styles";
+import { StyledLoadingSpinner } from "./styles/LoadingSpinner.styles";
 
 const LOCAL_STORAGE_INPUT_VALUE_KEY = "ExchangeCurreny.inputValue";
 const LOCAL_STORAGE_CURRENCY_KEY = "ExchangeCurreny.currency";
@@ -20,7 +20,11 @@ const sdk = new SDK({
     clientSecret: "bar",
 });
 
-const CurrencyConverter = () => {
+interface PropTypes {
+    className?: string;
+}
+
+const CurrencyConverter = ({ className }: PropTypes) => {
     // Create a state variable that is stored (and always updated) in localStorage and is initialized with the cached value if it exists
     const [inputValue, setInputValue] = useLocalStorage<string>(LOCAL_STORAGE_INPUT_VALUE_KEY, "");
 
@@ -39,7 +43,10 @@ const CurrencyConverter = () => {
     const [isLoadingList, setIsLoadingList] = useState<boolean>(false);
 
     // const [data, setData] = useLocalStorage<APICurrencyRatePair[]>(LOCAL_STORAGE_EXCHANGE_RATES_LIST_KEY, []);
-    const [exchangeRatesList, setExchangeRatesList] = useLocalStorage<CurrencyRatePair[]>(LOCAL_STORAGE_EXCHANGE_RATES_LIST_KEY, []);
+    const [exchangeRatesList, setExchangeRatesList] = useLocalStorage<CurrencyRatePair[]>(
+        LOCAL_STORAGE_EXCHANGE_RATES_LIST_KEY,
+        []
+    );
 
     // As soon as component mounts, dynamically get all possible currencies from Uphold's API
     useEffect(() => {
@@ -118,14 +125,14 @@ const CurrencyConverter = () => {
     };
 
     return (
-        <main className="main_container">
+        <main className={className}>
             <h2>Currency Converter</h2>
             <p>Receive competitive and transparent pricing with no hidden spreads. See how we compare.</p>
             <div className="inputs_container">
                 <input type="text" value={inputValue} onChange={handleInputChange} maxLength={24} placeholder="0.00" />
                 <div className="select_container">
                     {isLoading ? (
-                        <LoadingSpinner />
+                        <StyledLoadingSpinner fontSize="1.25rem" marginTop="0rem" />
                     ) : (
                         <select onChange={(event) => setCurrency(event.target.value)} name="currency" value={currency}>
                             {
@@ -141,7 +148,11 @@ const CurrencyConverter = () => {
                 </div>
             </div>
 
-            {isLoadingList ? <LoadingSpinner /> : <ExchangedCurrenciesList exchangeRatesList={exchangeRatesList} inputValue={inputValue} />}
+            {isLoadingList ? (
+                <StyledLoadingSpinner fontSize="2.5rem" marginTop="2rem" />
+            ) : (
+                <StyledExchangedCurrenciesList exchangeRatesList={exchangeRatesList} inputValue={inputValue} />
+            )}
         </main>
     );
 };

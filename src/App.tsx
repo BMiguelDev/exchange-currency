@@ -5,7 +5,7 @@ import { ThemeType } from "./models/model";
 import GlobalStyles from "./components/styles/Global";
 import { StyledNavbar } from "./components/styles/Navbar.styles";
 import { StyledFooter } from "./components/styles/Footer.styles";
-import CurrencyConverter from "./components/CurrencyConverter";
+import { StyledCurrencyConverter } from "./components/styles/CurrencyConverter.styles";
 
 // Uphold's color pallete
 const colorTheme: ThemeType = {
@@ -41,7 +41,7 @@ const App = () => {
             <div ref={appContainerRef} className="app_container">
                 <GlobalStyles theme={colorTheme} />
                 <StyledNavbar />
-                <CurrencyConverter />
+                <StyledCurrencyConverter />
                 <StyledFooter />
             </div>
         </ThemeProvider>

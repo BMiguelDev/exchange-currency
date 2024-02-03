@@ -40,6 +40,32 @@ const GlobalStyles = createGlobalStyle<{ theme: ThemeType }>`
         gap: 2rem;
         /* background-color: var(--app-bg-color); */
         background-color: ${(props) => props.theme.appBgColor};
+        
+
+        // Media query for unsuitable screens (mobile extremelly small)
+        @media screen and (max-width: 300px), screen and (max-height: 250px) {
+            
+            // App content
+            visibility: hidden;
+            overflow: hidden;
+
+            &::before {
+                position: fixed;
+                visibility: visible;
+                background: ${(props) => props.theme.appBgColor};
+                color: ${(props) => props.theme.appSecondaryColor};
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                text-align: center;
+                content: "Your screen is too small to display this App :(";
+                top: 0;
+                left: 0;
+                width: 100vw;
+                height: 100vh;
+                z-index: 10;
+            }
+        }
     }
 `;
 

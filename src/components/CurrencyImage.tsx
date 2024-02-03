@@ -2,13 +2,14 @@ import React, { useState } from "react";
 
 interface PropTypes {
     imageTitle: string;
+    className?: string
 }
 
 const ERROR_IMAGE_TITLE = "question-circle";
 
 // Component that loads the image of a currency from the local source if present, otherwise loads generic error image
 // It would be better to load currency images from an API to reduce static resources on the app, but no such API was found
-const CurrencyImage = ({ imageTitle }: PropTypes) => {
+const CurrencyImage = ({ imageTitle, className }: PropTypes) => {
     const [imgSrc, setImageSrc] = useState<string>(imageTitle);
     const [isImageError, setIsImageError] = useState<boolean>(false);
 
@@ -30,6 +31,7 @@ const CurrencyImage = ({ imageTitle }: PropTypes) => {
             aria-label="currency_image"
             alt={isImageError ? "Not Available" : "Currency"}
             style={{ width: "26px", height: "26px" }}
+            className={className}
         />
     );
 };

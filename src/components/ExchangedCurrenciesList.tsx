@@ -1,7 +1,7 @@
 import React from "react";
 
 import { CurrencyRatePair } from "../models/model";
-import CurrencyImage from "./CurrencyImage";
+import { StyledCurrencyImage } from "./styles/CurrencyImage.styles";
 
 interface PropTypes {
     exchangeRatesList: CurrencyRatePair[];
@@ -20,7 +20,7 @@ const ExchangedCurrenciesList = ({ exchangeRatesList, inputValue, className }: P
 
     return (
         <section className={className}>
-            {
+            { 
                 // If any exchange rates have been fetched, show them, otherwise show nothing
                 (exchangeRatesList.length > 0 && inputValue !== "") ? (
                     <ul className="exchanged_currencies_list">
@@ -33,7 +33,7 @@ const ExchangedCurrenciesList = ({ exchangeRatesList, inputValue, className }: P
                                     <b>Rate: </b> <span aria-label="currency_rate_number">{Number(exchangeRate.rate.slice(0, 8))}</span>
                                 </div>
                                 <figure className="exchanged_currency_info" aria-label="currency_info">
-                                    <CurrencyImage imageTitle={exchangeRate.currencyTo} />
+                                    <StyledCurrencyImage imageTitle={exchangeRate.currencyTo} />
                                     <figcaption>{exchangeRate.currencyTo}</figcaption>
                                 </figure>
                             </li>
