@@ -30,7 +30,7 @@ const ExchangedCurrenciesList = ({ exchangeRatesList, inputValue, className }: P
                                     {parseValueResult(exchangeRate.rate)}
                                 </span>
                                 <div className="exchanged_currency_rate" aria-label="currency_rate">
-                                    <b>Rate: </b> <span aria-label="currency_rate_number">{Number(exchangeRate.rate.slice(0, 8))}</span>
+                                    Rate: <span aria-label="currency_rate_number">{Number(exchangeRate.rate.slice(0, 8))}</span>
                                 </div>
                                 <figure className="exchanged_currency_info" aria-label="currency_info">
                                     <StyledCurrencyImage imageTitle={exchangeRate.currencyTo} />

@@ -16,7 +16,8 @@ export const StyledFooter = styled(Footer)`
     display: flex;
     flex-direction: column;
     gap: .2rem;
-    justify-content: space-between;
+    /* justify-content: space-between; */
+    justify-content: space-around;
     align-items: center;
     z-index: 1;
 
@@ -31,7 +32,7 @@ export const StyledFooter = styled(Footer)`
             justify-content: center;
 
             svg {
-                width: 70px;
+                width: 64px;
             }
         }
 
@@ -63,16 +64,23 @@ export const StyledFooter = styled(Footer)`
                 display: flex;
                 flex-direction: row;
                 justify-content: space-around;
+
+                svg {
+                    width: 15px;
+                }
             }
 
             select {
                 align-self: center;
+                width: 64px;
+                font-size: .6rem;
             }
 
             p {
                 margin: 0;
                 font-size: .775rem;
                 align-self: flex-end;
+                text-align: end;
                 color: ${(props) => props.theme.appSecondaryColorVariant2};
             }
         }
@@ -115,10 +123,18 @@ export const StyledFooter = styled(Footer)`
 
         .footer_top_row {
 
+            .small_logo_wrapper {
+
+                svg {
+                    width: 50px;
+                }
+            }
+
             .utils_column {
-                
+
                 select {
                     width: 40px;
+                    font-size: .5rem;
                 }
 
             }

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import SDK from "@uphold/uphold-sdk-javascript";
 
 import { APICurrencyRatePair, CurrencyRatePair } from "../models/model";
@@ -48,6 +48,8 @@ const CurrencyConverter = ({ className }: PropTypes) => {
         []
     );
 
+    const inputRef = useRef<HTMLInputElement>(null);
+
     // As soon as component mounts, dynamically get all possible currencies from Uphold's API
     useEffect(() => {
         const getCurrencyList = async () => {
@@ -75,6 +77,9 @@ const CurrencyConverter = ({ className }: PropTypes) => {
         };
 
         getCurrencyList();
+
+        // Focus on text input as soon as component mounts, if input value is still empty
+        if(inputValue === "" && inputRef.current) inputRef.current.focus();
     }, []);
 
     // Whenever <currency> changes, get exchange rate values from Uphold's API using a debounce mechanism (only triggers .5 second later)
@@ -129,10 +134,10 @@ const CurrencyConverter = ({ className }: PropTypes) => {
             <h2>Currency Converter</h2>
             <p>Receive competitive and transparent pricing with no hidden spreads. See how we compare.</p>
             <div className="inputs_container">
-                <input type="text" value={inputValue} onChange={handleInputChange} maxLength={24} placeholder="0.00" />
+                <input ref={inputRef} type="text" value={inputValue} onChange={handleInputChange} maxLength={24} placeholder="0.00" />
                 <div className="select_container">
                     {isLoading ? (
-                        <StyledLoadingSpinner fontSize="1.25rem" marginTop="0rem" />
+                        <StyledLoadingSpinner fontSize="1.25rem" marginTop="0.25rem" />
                     ) : (
                         <select onChange={(event) => setCurrency(event.target.value)} name="currency" value={currency}>
                             {

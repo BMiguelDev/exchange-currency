@@ -33,7 +33,7 @@ export const StyledNavbar = styled(Navbar)`
             justify-content: center;
 
             svg {
-                width: 100px;
+                width: 94px;
             }
         }
 

@@ -30,7 +30,7 @@ const CurrencyImage = ({ imageTitle, className }: PropTypes) => {
             src={attemptRequire(imgSrc)}
             aria-label="currency_image"
             alt={isImageError ? "Not Available" : "Currency"}
-            style={{ width: "26px", height: "26px" }}
+            style={{ width: "21px", height: "21px" }}
             className={className}
         />
     );

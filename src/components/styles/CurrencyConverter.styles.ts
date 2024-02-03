@@ -11,7 +11,23 @@ export const StyledCurrencyConverter = styled(CurrencyConverter)`
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
-    // gap: 1rem;
+    /* gap: .8rem; */
+
+    h2 {
+        margin: 0;
+        padding-bottom: 1rem;
+        font-weight: bold;
+        color: ${(props) => props.theme.appSecondaryColorVariant1};
+    }
+
+    &>p {
+        margin: 0;
+        padding-bottom: 1.75rem;
+        font-size: .9rem;
+        text-align: center;
+        line-height: 1.15rem;
+        color: ${(props) => props.theme.appSecondaryColorVariant2};
+    }
 
     .inputs_container {
         width: 100%;
@@ -21,8 +37,8 @@ export const StyledCurrencyConverter = styled(CurrencyConverter)`
             font-family: "Lato", sans-serif;
             width: 100%;
             // height: 100%;
-            padding: .325rem .75rem;
-            font-size: 1.1rem;
+            padding: .4rem .75rem;
+            font-size: 1.3rem;
             background-color: ${(props) => props.theme.appSecondaryColorVariant5};
             color: ${(props) => props.theme.appSecondaryColorVariant1};;
             border: none;
@@ -40,19 +56,21 @@ export const StyledCurrencyConverter = styled(CurrencyConverter)`
         .select_container {
             position: absolute;
             top: 10%;
-            left: 77.5%;
-            width: 20%;
+            right: 0%;
+            padding-right: .5rem;
+            /* width: 20%; */
             height: 80%;
             display: flex;
             justify-content: center;
-            font-size: 1.3rem;
+            align-items: center;
 
             select {
                 font-family: "Lato", sans-serif;
-            }
-
-            svg {
-                /* font-size: 2rem; */
+                font-size: .775rem !important;
+                border: none;
+                border-radius: 2rem;
+                height: 80%;
+                cursor: pointer;
             }
         }
     }
@@ -60,6 +78,12 @@ export const StyledCurrencyConverter = styled(CurrencyConverter)`
     // Media query for mobile portrait content
     @media screen and (max-width: 600px) {
         // Currency Converter main content
-        margin: 1% 15%;
+        margin: 1% 7.5%;
+    }
+
+    // Media query for very wide screens
+    @media screen and (min-width: 1500px) {
+        // Currency Converter main content
+        margin: 1% 30%;
     }
 `;
