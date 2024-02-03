@@ -7,7 +7,6 @@ export const StyledFooter = styled(Footer)`
     /* width: 100%; */
     margin: auto 12.5%;
     display: flex;
-    /* justify-content: flex-end; */
     height: 35%;
     background-color: ${(props) => props.theme.footerBgColor};
     color: ${(props) => props.theme.footerColor};
@@ -16,7 +15,6 @@ export const StyledFooter = styled(Footer)`
     display: flex;
     flex-direction: column;
     gap: .2rem;
-    /* justify-content: space-between; */
     justify-content: space-around;
     align-items: center;
     z-index: 1;

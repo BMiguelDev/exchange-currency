@@ -12,7 +12,6 @@ export const StyledButton = styled(Button)<PropTypes>`
     width: fit-content;
     text-decoration: none;
     margin: 0;
-    /* padding: 0.35rem 0.9rem; */
     padding: 0.4rem 1.3rem;
     font-size: 0.75rem;
     border-radius: 2rem;
